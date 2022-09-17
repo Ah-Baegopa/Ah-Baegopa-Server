@@ -1,4 +1,5 @@
 import fastify from 'fastify'
+import routes from './routes/index.js'
 
 const server = fastify({
   logger: {
@@ -8,9 +9,7 @@ const server = fastify({
   },
 })
 
-server.get('/ping', async (request, reply) => {
-  return 'pong'
-})
+server.register(routes, { prefix: '/api' })
 
 server.listen({ port: 8080 }, (err, address) => {
   if (err) {
