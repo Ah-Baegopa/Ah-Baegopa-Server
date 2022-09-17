@@ -7,14 +7,16 @@
   "author": "ckstn0777 <ckstn0777@naver.com>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "start": "node index.js"
+    "start": "ts-node-esm --transpile-only src/index.ts ",
+    "start:dev": "nodemon --watch ./src --exec \"yarn start\" -e ts"
   },
   "dependencies": {
     "fastify": "^4.6.0"
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
     "typescript": "^4.8.3"
   }
 }
