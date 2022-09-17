@@ -1,11 +1,15 @@
 import fastify from 'fastify'
 
 const server = fastify({
-  logger: true,
+  logger: {
+    transport: {
+      target: 'pino-pretty',
+    },
+  },
 })
 
 server.get('/ping', async (request, reply) => {
-  return 'pongdddss'
+  return 'pong'
 })
 
 server.listen({ port: 8080 }, (err, address) => {
