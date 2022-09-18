@@ -1,4 +1,6 @@
 import fastify from 'fastify'
+import swagger from '@fastify/swagger'
+import { swaggerConfig } from './config/swagger.js'
 import routes from './routes/index.js'
 
 const server = fastify({
@@ -9,6 +11,7 @@ const server = fastify({
   },
 })
 
+server.register(swagger, swaggerConfig)
 server.register(routes, { prefix: '/api' })
 
 server.listen({ port: 8080 }, (err, address) => {
