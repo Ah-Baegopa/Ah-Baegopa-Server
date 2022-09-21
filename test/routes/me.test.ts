@@ -1,13 +1,13 @@
-import { test } from 'tap'
+import { expect } from 'chai'
 import App from '../../src/main.js'
 
-test('default me route', async (tap) => {
-  const app = App
-
-  const response = await app.inject({
-    method: 'GET',
-    url: '/api/me',
+describe('default me route', () => {
+  it('should return 200', async () => {
+    const app = App
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/me',
+    })
+    expect(response.statusCode).to.equal(200)
   })
-
-  tap.equal(response.statusCode, 200, 'returns a status code of 200')
 })
