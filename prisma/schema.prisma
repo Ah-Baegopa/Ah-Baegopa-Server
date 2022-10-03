@@ -8,24 +8,25 @@ generator client {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  createAt DateTime @default(now())
-  email    String   @unique
-  role     Role     @default(USER)
-  posts    Post[]
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  role         Role     @default(USER)
+  createAt     DateTime @default(now())
+
+  Token Token[]
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean  @default(false)
-  title     String   @db.VarChar(255)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+model Token {
+  id              Int      @id @default(autoincrement())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int
+  rotationCounter Int      @default(1)
+  createAt        DateTime @default(now())
+  blocked         Boolean  @default(false)
 }
 
 enum Role {
-  USER
   ADMIN
+  USER
 }

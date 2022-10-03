@@ -6,8 +6,27 @@ export const AuthBody = Type.Object({
   password: Type.String(),
 })
 
+const TokensSchema = Type.Object({
+  accessToken: Type.String(),
+  refreshToken: Type.String(),
+})
+
+export const UserSchema = Type.Object({
+  id: Type.Integer(),
+  username: Type.String(),
+})
+
 export const AuthResult = Type.Object({
-  token: Type.String(),
+  tokens: TokensSchema,
+  user: UserSchema,
+})
+
+export const registerSchema = routeSchema({
+  tags: ['auth'],
+  body: AuthBody,
+  response: {
+    200: AuthResult,
+  },
 })
 
 export const loginSchema = routeSchema({
