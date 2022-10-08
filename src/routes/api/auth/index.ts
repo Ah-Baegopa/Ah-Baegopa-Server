@@ -1,4 +1,5 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
+import { setTokenCookie } from '../../../lib/cookies.js'
 import UserService from '../../../services/UserService.js'
 import { loginSchema, registerSchema } from './schema.js'
 
@@ -7,6 +8,8 @@ const authRoute: FastifyPluginAsyncTypebox = async (fastify) => {
 
   fastify.post('/register', { schema: registerSchema }, async (request, reply) => {
     const authResult = await userService.register(request.body)
+    setTokenCookie(reply, authResult.tokens)
+
     return authResult
   })
 
