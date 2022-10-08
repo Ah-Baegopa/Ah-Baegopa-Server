@@ -13,10 +13,12 @@ const authRoute: FastifyPluginAsyncTypebox = async (fastify) => {
     return authResult
   })
 
-  // fastify.post('/login', { schema: loginSchema }, async (request, reply) => {
-  //   console.log(request.body.username, request.body.password)
-  //   return { token: 'world' }
-  // })
+  fastify.post('/login', { schema: loginSchema }, async (request, reply) => {
+    const authResult = await userService.login(request.body)
+    setTokenCookie(reply, authResult.tokens)
+
+    return authResult
+  })
 }
 
 export default authRoute

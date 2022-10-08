@@ -81,6 +81,31 @@ class UserService {
       user,
     }
   }
+
+  async login({ username, password }: AuthParams) {
+    const user = await db.user.findUnique({
+      where: {
+        username,
+      },
+    })
+
+    if (!user) {
+      throw new Error('존재하지 않는 사용자입니다.')
+    }
+
+    const isValid = await bcrypt.compare(password, user.passwordHash)
+
+    if (!isValid) {
+      throw new Error('비밀번호가 일치하지 않습니다.')
+    }
+
+    const tokens = await this.generateTokens(user)
+
+    return {
+      tokens,
+      user,
+    }
+  }
 }
 
 export default UserService
