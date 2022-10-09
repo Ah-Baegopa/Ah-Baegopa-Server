@@ -4,6 +4,7 @@ import fastifyCookie from '@fastify/cookie'
 import { swaggerConfig } from './config/swagger.js'
 import routes from './routes/index.js'
 import { isAppError } from './lib/AppError.js'
+import { authPlugin } from './plugins/authPlugin.js'
 
 const server = fastify({
   logger: {
@@ -22,6 +23,7 @@ server.setErrorHandler(async (error, request, reply) => {
       name: error.name,
       message: error.message,
       statusCode: error.statusCode,
+      payload: error.payload,
     }
   } else {
     return {
@@ -32,6 +34,7 @@ server.setErrorHandler(async (error, request, reply) => {
   }
 })
 
+server.register(authPlugin)
 server.register(routes, { prefix: '/api' })
 
 server.listen({ port: 8081 })

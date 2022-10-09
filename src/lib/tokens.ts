@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 const JWT_SECRET = process.env.JWT_SECRET ?? 'DevSecretKey'
 export const tokensDuration = {
   access_token: '1h',
-  refresh_token: '30d',
+  refresh_token: '7d',
 } as const
 
 if (process.env.JWT_SECRET === undefined) {
@@ -27,6 +27,18 @@ export function generateToken(payload: TokenPayload) {
   })
 }
 
+export function validateToken<T>(token: string) {
+  return new Promise<DecodedToken<T>>((resolve, reject) => {
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err || !decoded) {
+        reject(err)
+        return
+      }
+      resolve(decoded as DecodedToken<T>)
+    })
+  })
+}
+
 export interface AccessTokenPayload {
   type: 'access_token'
   userId: number
@@ -41,3 +53,8 @@ export interface RefreshTokenPayload {
 }
 
 type TokenPayload = AccessTokenPayload | RefreshTokenPayload
+
+type DecodedToken<T> = {
+  iat: number
+  exp: number
+} & T
