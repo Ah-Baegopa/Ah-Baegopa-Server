@@ -1,7 +1,9 @@
 import { Type } from '@sinclair/typebox'
-import { routeSchema } from '../../../lib/routeSchema.js'
+import { FastifySchema } from 'fastify'
+import { createAppErrorSchema, errors } from '../../../lib/AppError.js'
+import { createRouteSchema } from '../../../lib/routeSchema.js'
 
-export const AuthBody = Type.Object({
+const AuthBodySchema = Type.Object({
   username: Type.String(),
   password: Type.String(),
 })
@@ -11,28 +13,37 @@ const TokensSchema = Type.Object({
   refreshToken: Type.String(),
 })
 
-export const UserSchema = Type.Object({
+const UserSchema = Type.Object({
   id: Type.Integer(),
   username: Type.String(),
 })
 
-export const AuthResult = Type.Object({
+const AuthResultSchema = Type.Object({
   tokens: TokensSchema,
   user: UserSchema,
 })
 
-export const registerSchema = routeSchema({
-  tags: ['auth'],
-  body: AuthBody,
-  response: {
-    200: AuthResult,
+export const AuthRouteSchema = createRouteSchema({
+  Register: {
+    tags: ['auth'],
+    body: AuthBodySchema,
+    response: {
+      200: AuthResultSchema,
+      409: createAppErrorSchema({
+        name: 'UserExistsError',
+        ...errors['UserExistsError'],
+      }),
+    },
   },
-})
-
-export const loginSchema = routeSchema({
-  tags: ['auth'],
-  body: AuthBody,
-  response: {
-    200: AuthResult,
+  Login: {
+    tags: ['auth'],
+    body: AuthBodySchema,
+    response: {
+      200: AuthResultSchema,
+      401: createAppErrorSchema({
+        name: 'AuthenticationError',
+        ...errors['AuthenticationError'],
+      }),
+    },
   },
 })

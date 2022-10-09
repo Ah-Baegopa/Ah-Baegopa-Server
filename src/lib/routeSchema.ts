@@ -1,5 +1,5 @@
 import { FastifySchema } from 'fastify'
 
-export function routeSchema<T extends FastifySchema>(schema: T) {
-  return schema
+export function createRouteSchema<T extends Record<string, FastifySchema>>(params: T) {
+  return params
 }

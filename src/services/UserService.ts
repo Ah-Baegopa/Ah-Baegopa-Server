@@ -2,6 +2,7 @@ import db from '../lib/db.js'
 import bcrypt from 'bcrypt'
 import { User } from '@prisma/client'
 import { generateToken } from '../lib/tokens.js'
+import AppError from '../lib/AppError.js'
 
 const SALT_ROUNDS = 10
 
@@ -61,9 +62,8 @@ class UserService {
         username,
       },
     })
-
     if (exists) {
-      throw new Error('이미 존재하는 사용자입니다.')
+      throw new AppError('UserExistsError')
     }
 
     const hash = await bcrypt.hash(password, SALT_ROUNDS)
@@ -88,15 +88,13 @@ class UserService {
         username,
       },
     })
-
     if (!user) {
-      throw new Error('존재하지 않는 사용자입니다.')
+      throw new AppError('AuthenticationError')
     }
 
     const isValid = await bcrypt.compare(password, user.passwordHash)
-
     if (!isValid) {
-      throw new Error('비밀번호가 일치하지 않습니다.')
+      throw new AppError('AuthenticationError')
     }
 
     const tokens = await this.generateTokens(user)
